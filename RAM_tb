@@ -1,0 +1,58 @@
+`timescale 1ns/1ps
+
+module ram_tb;
+
+    reg clk;
+    reg we;
+    reg [3:0] addr;
+    reg [7:0] data_in;
+    wire [7:0] data_out;
+
+    // Instantiate RAM
+    ram_design uut (
+        .clk(clk),
+        .we(we),
+        .addr(addr),
+        .data_in(data_in),
+        .data_out(data_out)
+    );
+
+    // Clock Generation (10ns period)
+    always #5 clk = ~clk;
+
+    initial begin
+        // Dump waveform file
+        $dumpfile("ram_waveform.vcd");
+        $dumpvars(0, ram_tb);
+
+        // Initialize
+        clk = 0;
+        we = 0;
+        addr = 0;
+        data_in = 0;
+
+        #10;
+
+        // ------------------
+        // WRITE OPERATIONS
+        // ------------------
+        we = 1;
+
+        addr = 4'b0001; data_in = 8'hA5; #10;
+        addr = 4'b0010; data_in = 8'h3C; #10;
+        addr = 4'b0011; data_in = 8'hF0; #10;
+
+        // ------------------
+        // READ OPERATIONS
+        // ------------------
+        we = 0;
+
+        addr = 4'b0001; #10;
+        addr = 4'b0010; #10;
+        addr = 4'b0011; #10;
+
+        #20;
+        $finish;
+    end
+
+endmodule
