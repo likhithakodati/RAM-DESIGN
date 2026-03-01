@@ -1,0 +1,21 @@
+module ram_design (
+    input clk,
+    input we,                 // Write Enable
+    input [3:0] addr,         // 4-bit Address
+    input [7:0] data_in,      // 8-bit Data Input
+    output [7:0] data_out     // 8-bit Data Output
+);
+
+    // Declare memory array (16 locations of 8-bit each)
+    reg [7:0] memory [15:0];
+
+    // Write Operation (Synchronous)
+    always @(posedge clk) begin
+        if (we)
+            memory[addr] <= data_in;
+    end
+
+    // Read Operation (Asynchronous)
+    assign data_out = memory[addr];
+
+endmodule
